@@ -1,16 +1,20 @@
 package View;
 
+import conexoes.ConexaoSQLite;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Objects;
 
 
 public class TelaPrincipal extends JFrame {
 
     //algumas variaveis criada para testes, depois do programa integrado apagar
-    String testenome = "Limirio Correia Guimaraes";
     Double testeSalario1 = 5241.34;
     //fim das variaveis para teste
     ImageIcon fundo = new ImageIcon(Objects.requireNonNull(getClass().getResource("Imagens/menu.png")));
@@ -34,7 +38,41 @@ public class TelaPrincipal extends JFrame {
 
         //Configurações do nome do usuário
         JLabel nomePainel = new JLabel();
-        nomePainel.setText(testenome);
+        //Setando o nome do painel com o nome do usuario
+        ConexaoSQLite conexaoSQLite = new ConexaoSQLite();
+        conexaoSQLite.conectar();
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+
+        String sql = "SELECT * "
+                +" FROM tbl_usuarios"
+                +" WHERE id = ?";
+
+        try{
+
+            preparedStatement = conexaoSQLite.criarPreparedStatement(sql);
+            preparedStatement.setInt(1, LoginView.getIdUsuario());
+
+            resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+
+                nomePainel.setText(resultSet.getString("nome"));
+
+            }
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }finally {
+
+            try{
+                resultSet.close();
+                preparedStatement.close();
+                conexaoSQLite.desconectar();
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
         nomePainel.setForeground(new Color(255, 255, 255));
         nomePainel.setBounds(5, 0, 600,100);
         nomePainel.setFont(new Font("Times New Roman", Font.PLAIN, 35));
@@ -121,7 +159,7 @@ public class TelaPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 telaPrincipal.dispose();
-                new Login();
+                new LoginView();
             }
         });
 
@@ -136,10 +174,11 @@ public class TelaPrincipal extends JFrame {
     }
 
     private void abrirConta(ActionEvent actionEvent) {
-        new ContaBancaria();
+        new ContaBancariaView();
     }
 
     private void abrirDespesas(ActionEvent actionEvent) {
+        System.out.println(LoginView.getIdUsuario());
     }
 
     private void abrirPerfil(ActionEvent actionEvent) {

@@ -1,6 +1,7 @@
 package View;
 
 import conexoes.ConexaoSQLite;
+import model.Pessoa;
 import model.Usuario;
 
 import java.sql.PreparedStatement;
@@ -12,12 +13,12 @@ import java.awt.event.ActionEvent;
 
 public class CadastrarUsuario extends JFrame {
 
-    JTextField nomeUsuario;
-    JTextField telefoneUsuario;
-    JTextField idadeUsuario;
-    JTextField cpfUsuario;
-    JTextField acessoUsuario;
-    JTextField senhaUsuario;
+    public static JTextField nomeUsuario;
+    public static JTextField telefoneUsuario;
+    public static JTextField idadeUsuario;
+    public static JTextField cpfUsuario;
+    public static JTextField acessoUsuario;
+    public static JTextField senhaUsuario;
     JFrame cadastrarUsuario;
     public CadastrarUsuario(){
         super();
@@ -129,6 +130,7 @@ public class CadastrarUsuario extends JFrame {
         salvar.setForeground(new Color (255, 255, 255));
         salvar.setVisible(true);
         salvar.addActionListener(this::salvar);
+
         cadastrarUsuario.add(salvar);
 
         cadastrarUsuario.setVisible(true);
@@ -136,64 +138,10 @@ public class CadastrarUsuario extends JFrame {
 
     private void salvar(ActionEvent actionEvent) throws RuntimeException {
 
-        ConexaoSQLite conexaoSQLite = new ConexaoSQLite();
+        Pessoa.salvarUsuario(nomeUsuario.getText(),telefoneUsuario.getText(), Integer.parseInt(idadeUsuario.getText()),
+                cpfUsuario.getText(),acessoUsuario.getText(),senhaUsuario.getText(), cadastrarUsuario);
 
-        Usuario usuario1 = new Usuario();
-        usuario1.setNome(nomeUsuario.getText());
-        usuario1.setTelefone(telefoneUsuario.getText());
-        usuario1.setIdade(Integer.parseInt(idadeUsuario.getText()));
-        usuario1.setCpf(cpfUsuario.getText());
-        usuario1.setUser(acessoUsuario.getText());
-        usuario1.setSenha(senhaUsuario.getText());
-
-        conexaoSQLite.conectar();
-
-        String sqlInsert = "INSERT INTO tbl_usuarios ("
-                + "nome,"
-                + "telefone,"
-                + "idade,"
-                + "cpf,"
-                + "login,"
-                + "senha"
-                + ") VALUES(?,?,?,?,?,?)"
-                + ";";
-
-        PreparedStatement preparedStatement = conexaoSQLite.criarPreparedStatement(sqlInsert);
-        try{
-            preparedStatement.setString(1,usuario1.getNome());
-            preparedStatement.setString(2,usuario1.getTelefone());
-            preparedStatement.setInt(3,usuario1.getIdade());
-            preparedStatement.setString(4,usuario1.getCpf());
-            preparedStatement.setString(5,usuario1.getUser());
-            preparedStatement.setString(6,usuario1.getSenha());
-
-            int resultado = preparedStatement.executeUpdate();
-
-            if(resultado == 1 ){
-                JOptionPane.showMessageDialog(null,
-                "Usuário cadastrado com sucesso!", "Usuário Cadastrado", JOptionPane.PLAIN_MESSAGE);
-                cadastrarUsuario.dispose();
-            }else{
-                JOptionPane.showMessageDialog(null,
-           "Erro ao cadastrar usuário!", "ERRO", JOptionPane.ERROR_MESSAGE);
-            }
-
-        }catch (SQLException e){
-            JOptionPane.showMessageDialog(null,e.getMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
-            System.err.println(e.getMessage());
-
-        }finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            conexaoSQLite.desconectar();
-        }
     }
-
 }
 
 

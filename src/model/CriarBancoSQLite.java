@@ -43,4 +43,35 @@ public class CriarBancoSQLite {
         }
 
     }
+
+    public void criarTabelaContaBancaria(){
+        String sql = ("CREATE TABLE IF NOT EXISTS tbl_contaBancaria"
+                + " ( "
+                + "   id INTEGER, "
+                + "   banco VARCHAR(255), "
+                + "   numAgencia INTEGER, "
+                + "   numConta INTEGER, "
+                + "   digitoConta INTEGER, "
+                + "   saldo DOUBLE"
+                + " );" );
+        //Executando o sql de criar tabela
+
+        boolean conectou = false;
+
+        try{
+            conectou = this.conexaoSQLite.conectar();
+
+            Statement stmt = this.conexaoSQLite.criarStatement();
+            stmt.execute(sql);
+
+        }catch (SQLException e){
+            System.err.println(e.getMessage());
+
+        }finally {
+            if(conectou){
+                this.conexaoSQLite.desconectar();
+            }
+        }
+
+    }
 }

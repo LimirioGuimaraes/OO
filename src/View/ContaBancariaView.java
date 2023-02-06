@@ -5,9 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ContaBancaria extends JFrame {
+public class ContaBancariaView extends JFrame {
 
-    public ContaBancaria(){
+    public ContaBancariaView(){
         super();
         JFrame contaBancaria = new JFrame();
         contaBancaria.setTitle("Conta Bancária");
@@ -74,13 +74,6 @@ public class ContaBancaria extends JFrame {
         painelInfo.setBackground(new Color(180, 220, 209));
 
         contaBancaria.add(painelInfo);
-
-
-
-
-
-
-
 
         JButton voltar = new JButton();
         voltar.setText("Voltar");
