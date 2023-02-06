@@ -1,17 +1,25 @@
 package View;
 
+import conexoes.ConexaoSQLite;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Login extends JFrame {
 
     JTextField nome_usuario;
     JTextField senha_usuario;
+    JFrame login;
+    int idUsuario = 0;
 
     public Login(){
         super();
-        JFrame login = new JFrame();
+        login = new JFrame();
         login.setSize(300, 325);
         login.setTitle("Login");
         login.setResizable(false);
@@ -69,23 +77,57 @@ public class Login extends JFrame {
     }
 
     private void criarUsuario(ActionEvent actionEvent) {
-
-        /*implementacao com a tela de criacao de novos usuarios*/
-        String nome = nome_usuario.getText();
-        String senha = senha_usuario.getText();
-        System.out.println("Dados: nome: " + nome + ", senha: " + senha);
-
         new CadastrarUsuario();
     }
 
     private void verificaLogin(ActionEvent actionEvent) {
 
-        new TelaPrincipal();
-        /*espaço para integração com o login*/
+        ConexaoSQLite conexaoSQLite = new ConexaoSQLite();
+        conexaoSQLite.conectar();
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
 
-        //se o login der errado
-//            JOptionPane.showMessageDialog(null,
-//            "Usuario ou senha incorretos", "ERRO", JOptionPane.ERROR_MESSAGE);
+        String sql = "SELECT * "
+                +" FROM tbl_usuarios"
+                +" WHERE login = ? AND senha = ?";
+
+        try{
+
+            preparedStatement = conexaoSQLite.criarPreparedStatement(sql);
+            preparedStatement.setString(1, nome_usuario.getText());
+            preparedStatement.setString(2, senha_usuario.getText());
+            resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+
+                while (resultSet.next()){
+                    System.out.println("o id e: " + idUsuario);
+                    idUsuario = resultSet.getInt("id");
+                    System.out.println("o id e: " + idUsuario);
+
+                }
+                login.dispose();
+                new TelaPrincipal();
+
+            }else{
+                JOptionPane.showMessageDialog(null,
+                        "Usuario ou senha incorretos", "ERRO", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }finally {
+
+            try{
+                resultSet.close();
+                preparedStatement.close();
+                conexaoSQLite.desconectar();
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+
+        System.out.println("o id e: " + idUsuario);
    }
 
 

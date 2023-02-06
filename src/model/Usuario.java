@@ -41,6 +41,5 @@ public class Usuario extends Pessoa{
         this.senha = senha;
     }
 
-
     }
 

@@ -15,7 +15,6 @@ public class ConexaoSQLite {
             System.err.println(e.getMessage());
             return false;
         }
-        System.out.println("Conectou");
 
         return true;
     }
@@ -28,7 +27,6 @@ public class ConexaoSQLite {
             System.err.println(e.getMessage());
             return false;
         }
-        System.out.println("desconectou");
         return true;
     }
 

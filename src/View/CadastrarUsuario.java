@@ -18,7 +18,6 @@ public class CadastrarUsuario extends JFrame {
     JTextField cpfUsuario;
     JTextField acessoUsuario;
     JTextField senhaUsuario;
-
     JFrame cadastrarUsuario;
     public CadastrarUsuario(){
         super();
@@ -196,3 +195,5 @@ public class CadastrarUsuario extends JFrame {
     }
 
 }
+
+

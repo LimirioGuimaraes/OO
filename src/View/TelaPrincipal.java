@@ -121,7 +121,7 @@ public class TelaPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 telaPrincipal.dispose();
-                //depois que agregar com o login do back-end dar um "new login;"//
+                new Login();
             }
         });
 
@@ -131,7 +131,7 @@ public class TelaPrincipal extends JFrame {
         imagem.setVisible(true);
         telaPrincipal.add(imagem);
 
-        telaPrincipal.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        telaPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         telaPrincipal.setVisible(true);
     }
 
