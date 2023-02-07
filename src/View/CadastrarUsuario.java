@@ -138,7 +138,7 @@ public class CadastrarUsuario extends JFrame {
 
     private void salvar(ActionEvent actionEvent) throws RuntimeException {
 
-        Pessoa.salvarUsuario(nomeUsuario.getText(),telefoneUsuario.getText(), Integer.parseInt(idadeUsuario.getText()),
+        Usuario.salvarUsuario(nomeUsuario.getText(),telefoneUsuario.getText(), Integer.parseInt(idadeUsuario.getText()),
                 cpfUsuario.getText(),acessoUsuario.getText(),senhaUsuario.getText(), cadastrarUsuario);
 
     }

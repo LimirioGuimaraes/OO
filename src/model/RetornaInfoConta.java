@@ -48,6 +48,7 @@ public class RetornaInfoConta {
         }finally {
 
             try{
+                assert resultSet != null;
                 resultSet.close();
                 preparedStatement.close();
                 conexaoSQLite.desconectar();

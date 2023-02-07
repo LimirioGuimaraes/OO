@@ -1,16 +1,26 @@
 package View;
 
+import conexoes.ConexaoSQLite;
 import model.RetornaInfoConta;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class ContaBancariaView extends JFrame {
 
     JPanel painelInfo;
     JFrame contaBancaria;
+    JTextField bancoTextField;
+    JTextField agenciaTextField;
+    JTextField numContaTextField;
+    JTextField digitoContaTextField;
+    JTextField saldoTextField;
+    JPanel painelEdicao;
+    JLabel agenciaLabel;
     public ContaBancariaView(){
         super();
         contaBancaria = new JFrame();
@@ -79,6 +89,7 @@ public class ContaBancariaView extends JFrame {
         painelInfo.setBackground(new Color(180, 220, 209));
         painelInfo.setLayout(null);
         painelInfo.setVisible(true);
+
         infoPanel(painelInfo);
         contaBancaria.add(painelInfo);
 
@@ -100,15 +111,62 @@ public class ContaBancariaView extends JFrame {
         contaBancaria.setVisible(true);
     }
 
+
+    private void salvarAtualizacao(ActionEvent actionEvent) {
+
+        ConexaoSQLite conexaoSQLite = new ConexaoSQLite();
+        conexaoSQLite.conectar();
+        PreparedStatement preparedStatement = null;
+
+        String sql = "UPDATE tbl_contaBancaria"
+                    + " SET "
+                    + " banco = ?, "
+                    + " numAgencia = ?, "
+                    + " numConta = ?, "
+                    + " digitoConta = ?, "
+                    + " saldo = ? "
+                    + " WHERE id = ?";
+        try{
+
+            preparedStatement = conexaoSQLite.criarPreparedStatement(sql);
+            preparedStatement.setString(1, bancoTextField.getText());
+            preparedStatement.setInt(2, Integer.parseInt(agenciaTextField.getText()));
+            preparedStatement.setInt(3, Integer.parseInt(numContaTextField.getText()));
+            preparedStatement.setInt(4, Integer.parseInt(digitoContaTextField.getText()));
+            preparedStatement.setDouble(5, Double.parseDouble(saldoTextField.getText()));
+            preparedStatement.setInt(6, LoginView.getIdUsuario());
+            preparedStatement.executeUpdate();
+
+            JOptionPane.showMessageDialog(null,
+                    "Dados atualizados", "Informativo", JOptionPane.PLAIN_MESSAGE);
+
+            contaBancaria.dispose();
+            new ContaBancariaView();
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }finally {
+            try {
+                assert preparedStatement != null;
+                preparedStatement.close();
+                conexaoSQLite.desconectar();
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+
+    }
+
     private void editarInfoConta(ActionEvent actionEvent) {
 
-        JPanel painelEdicao = new JPanel();
+        painelEdicao = new JPanel();
         painelEdicao.setBounds(300,0,500,600);
         painelEdicao.setBackground(new Color(180, 220, 209));
         painelEdicao.setLayout(null);
+        contaBancaria.add(painelEdicao);
+
         painelInfo.setVisible(false);
         painelEdicao.setVisible(true);
-        contaBancaria.add(painelEdicao);
 
         RetornaInfoConta.buscarInformacoesConta();
 
@@ -118,30 +176,90 @@ public class ContaBancariaView extends JFrame {
         painelEdicao.add(titulo);
 
         JLabel bancoLabel = new JLabel("Banco:");
-        bancoLabel.setBounds(5, 50, 120,30);
+        bancoLabel.setBounds(5, 75, 200,30);
         bancoLabel.setFont(new Font("Arial", Font.PLAIN, 21));
         bancoLabel.setForeground(new Color(0, 0, 0));
         painelEdicao.add(bancoLabel);
 
-        JTextField bancoTextField = new JTextField();
-        bancoTextField.setText("");
-        bancoTextField.setBounds(85, 50, 140, 30);
+        bancoTextField = new JTextField();
+        bancoTextField.setText(RetornaInfoConta.retornaBanco());
+        bancoTextField.setBounds(72, 75, 140, 30);
         bancoTextField.setVisible(true);
         painelEdicao.add(bancoTextField);
+
+        JLabel agenciaLabel = new JLabel("Número da agência:");
+        agenciaLabel.setBounds(5, 125, 200,30);
+        agenciaLabel.setFont(new Font("Arial", Font.PLAIN, 21));
+        agenciaLabel.setForeground(new Color(0, 0, 0));
+        painelEdicao.add(agenciaLabel);
+
+        agenciaTextField = new JTextField();
+        agenciaTextField.setText(String.valueOf(RetornaInfoConta.retornaNumAgencia()));
+        agenciaTextField.setBounds(193, 125, 140, 30);
+        agenciaTextField.setVisible(true);
+        painelEdicao.add(agenciaTextField);
+
+        JLabel numContaLabel = new JLabel("Número da conta:");
+        numContaLabel.setBounds(5, 175, 200,30);
+        numContaLabel.setFont(new Font("Arial", Font.PLAIN, 21));
+        numContaLabel.setForeground(new Color(0, 0, 0));
+        painelEdicao.add(numContaLabel);
+
+        numContaTextField = new JTextField();
+        numContaTextField.setText(String.valueOf(RetornaInfoConta.retornaNumConta()));
+        numContaTextField.setBounds(172, 175, 140, 30);
+        numContaTextField.setVisible(true);
+        painelEdicao.add(numContaTextField);
+
+        JLabel digitoContaLabel = new JLabel("Digito da conta:");
+        digitoContaLabel.setBounds(5, 225, 200,30);
+        digitoContaLabel.setFont(new Font("Arial", Font.PLAIN, 21));
+        digitoContaLabel.setForeground(new Color(0, 0, 0));
+        painelEdicao.add(digitoContaLabel);
+
+        digitoContaTextField = new JTextField();
+        digitoContaTextField.setText(String.valueOf(RetornaInfoConta.retornaDigitoConta()));
+        digitoContaTextField.setBounds(153, 225, 140, 30);
+        digitoContaTextField.setVisible(true);
+        painelEdicao.add(digitoContaTextField);
+
+        JLabel saldoLabel = new JLabel("Saldo:");
+        saldoLabel.setBounds(5, 275, 200,30);
+        saldoLabel.setFont(new Font("Arial", Font.PLAIN, 21));
+        saldoLabel.setForeground(new Color(0, 0, 0));
+        painelEdicao.add(saldoLabel);
+
+        saldoTextField = new JTextField();
+        saldoTextField.setText(String.valueOf(RetornaInfoConta.retornaSaldo()));
+        saldoTextField.setBounds(65, 275, 140, 30);
+        saldoTextField.setVisible(true);
+        painelEdicao.add(saldoTextField);
 
         JButton salvar = new JButton();
         salvar.setText("Salvar");
         salvar.setFont(new Font("Times New Roman",Font.PLAIN,23));
         salvar.setBounds(105,450,140,35);
+        salvar.addActionListener(this::salvarAtualizacao);
         painelEdicao.add(salvar);
+
+        bancoTextField.getText();
 
         JButton cancelar = new JButton();
         cancelar.setText("Cancelar");
         cancelar.setFont(new Font("Times New Roman",Font.PLAIN,23));
         cancelar.setBounds(250,450,140,35);
+        cancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                painelInfo.setVisible(true);
+                painelEdicao.setVisible(false);
+
+            }
+        });
         painelEdicao.add(cancelar);
 
     }
+
 
     private void infoPanel(JPanel painelInfo){
 
@@ -157,7 +275,7 @@ public class ContaBancariaView extends JFrame {
         bancoLabel.setVisible(true);
         painelInfo.add(bancoLabel);
 
-        JLabel agenciaLabel = new JLabel("Número da agência: " + RetornaInfoConta.retornaNumAgencia());
+        agenciaLabel = new JLabel("Número da agência: " + RetornaInfoConta.retornaNumAgencia());
         agenciaLabel.setBounds(5,100,600,50);
         agenciaLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         agenciaLabel.setVisible(true);
