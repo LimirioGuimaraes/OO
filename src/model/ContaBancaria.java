@@ -54,14 +54,6 @@ public class ContaBancaria {
 
                 int resultado = preparedStatement.executeUpdate();
 
-                if(resultado == 1 ){
-
-                    System.out.println("conta criada!");
-
-                }else{
-                    System.out.println("erro ao criar conta");
-                }
-
             }catch (SQLException e){
                 JOptionPane.showMessageDialog(null,e.getMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
                 System.err.println(e.getMessage());

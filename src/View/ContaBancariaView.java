@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 public class ContaBancariaView extends JFrame {
 
+    JPanel painelInfo;
     public ContaBancariaView(){
         super();
         JFrame contaBancaria = new JFrame();
@@ -69,10 +70,10 @@ public class ContaBancariaView extends JFrame {
 
 
         //Painel para mostrar informacoes
-        JPanel painelInfo = new JPanel();
+        painelInfo = new JPanel();
         painelInfo.setBounds(300,0,500,600);
         painelInfo.setBackground(new Color(180, 220, 209));
-
+        infoPanel(painelInfo);
         contaBancaria.add(painelInfo);
 
         JButton voltar = new JButton();
@@ -92,4 +93,16 @@ public class ContaBancariaView extends JFrame {
 
         contaBancaria.setVisible(true);
     }
+
+    private void infoPanel(JPanel painelInfo){
+
+        JLabel titulo = new JLabel("Dados da conta");
+        titulo.setBounds(painelInfo.getX()/2, 100, 600,80);
+        titulo.setFont(new Font("Times New Roman", Font.PLAIN, 35));
+
+
+        painelInfo.add(titulo);
+        titulo.setVisible(true);
+    }
+
 }

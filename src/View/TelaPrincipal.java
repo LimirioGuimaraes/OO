@@ -13,10 +13,7 @@ import java.util.Objects;
 
 
 public class TelaPrincipal extends JFrame {
-
-    //algumas variaveis criada para testes, depois do programa integrado apagar
-    Double testeSalario1 = 5241.34;
-    //fim das variaveis para teste
+    Double salario;
     ImageIcon fundo = new ImageIcon(Objects.requireNonNull(getClass().getResource("Imagens/menu.png")));
     public TelaPrincipal(){
         super();
@@ -81,17 +78,47 @@ public class TelaPrincipal extends JFrame {
 
         //Definição do valor em conta do usuário
         JLabel valorPainel = new JLabel();
-        //valorPainel.setText("R$ " + String.valueOf(testeSalario1));
+        //Setando o nome do painel com o nome do usuario
+        conexaoSQLite.conectar();
+        resultSet = null;
+        preparedStatement = null;
+
+        String sql2 = "SELECT * "
+                +" FROM tbl_contaBancaria"
+                +" WHERE id = ?";
+
+        try{
+
+            preparedStatement = conexaoSQLite.criarPreparedStatement(sql2);
+            preparedStatement.setInt(1, LoginView.getIdUsuario());
+            resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                salario = resultSet.getDouble("saldo");
+            }
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }finally {
+
+            try{
+                resultSet.close();
+                preparedStatement.close();
+                conexaoSQLite.desconectar();
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
         valorPainel.setText(""
                 + "<html>"
                 + "<font color=\"white\">R$</font> "
-                + testeSalario1
+                + salario
                 + "</html>");
         valorPainel.setForeground(new Color(0, 0, 0));
         valorPainel.setBounds(560, 0, 600,100);
         valorPainel.setFont(new Font("Times New Roman", Font.PLAIN, 35));
         valorPainel.setVisible(true);
-        if (testeSalario1 > 0) {
+        if (salario > 0) {
             valorPainel.setForeground(new Color(27, 236, 62));
         }else{
             valorPainel.setForeground(new Color(246, 106, 106));
