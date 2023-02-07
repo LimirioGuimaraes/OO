@@ -1,6 +1,8 @@
 package View;
 
 import conexoes.ConexaoSQLite;
+import model.RetornaInfoConta;
+import model.RetornaInfoUsuario;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +15,6 @@ import java.util.Objects;
 
 
 public class TelaPrincipal extends JFrame {
-    Double salario;
     ImageIcon fundo = new ImageIcon(Objects.requireNonNull(getClass().getResource("Imagens/menu.png")));
     public TelaPrincipal(){
         super();
@@ -36,40 +37,8 @@ public class TelaPrincipal extends JFrame {
         //Configurações do nome do usuário
         JLabel nomePainel = new JLabel();
         //Setando o nome do painel com o nome do usuario
-        ConexaoSQLite conexaoSQLite = new ConexaoSQLite();
-        conexaoSQLite.conectar();
-        ResultSet resultSet = null;
-        PreparedStatement preparedStatement = null;
-
-        String sql = "SELECT * "
-                +" FROM tbl_usuarios"
-                +" WHERE id = ?";
-
-        try{
-
-            preparedStatement = conexaoSQLite.criarPreparedStatement(sql);
-            preparedStatement.setInt(1, LoginView.getIdUsuario());
-
-            resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()){
-
-                nomePainel.setText(resultSet.getString("nome"));
-
-            }
-
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-        }finally {
-
-            try{
-                resultSet.close();
-                preparedStatement.close();
-                conexaoSQLite.desconectar();
-            }catch (SQLException e){
-                System.out.println(e.getMessage());
-            }
-        }
+        RetornaInfoUsuario.buscarInformacoesUsuario();
+        nomePainel.setText(RetornaInfoUsuario.retornaNome());
         nomePainel.setForeground(new Color(255, 255, 255));
         nomePainel.setBounds(5, 0, 600,100);
         nomePainel.setFont(new Font("Times New Roman", Font.PLAIN, 35));
@@ -78,47 +47,18 @@ public class TelaPrincipal extends JFrame {
 
         //Definição do valor em conta do usuário
         JLabel valorPainel = new JLabel();
-        //Setando o nome do painel com o nome do usuario
-        conexaoSQLite.conectar();
-        resultSet = null;
-        preparedStatement = null;
-
-        String sql2 = "SELECT * "
-                +" FROM tbl_contaBancaria"
-                +" WHERE id = ?";
-
-        try{
-
-            preparedStatement = conexaoSQLite.criarPreparedStatement(sql2);
-            preparedStatement.setInt(1, LoginView.getIdUsuario());
-            resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()){
-                salario = resultSet.getDouble("saldo");
-            }
-
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-        }finally {
-
-            try{
-                resultSet.close();
-                preparedStatement.close();
-                conexaoSQLite.desconectar();
-            }catch (SQLException e){
-                System.out.println(e.getMessage());
-            }
-        }
+        RetornaInfoConta.buscarInformacoesConta();
         valorPainel.setText(""
                 + "<html>"
                 + "<font color=\"white\">R$</font> "
-                + salario
+                + RetornaInfoConta.retornaSaldo()
                 + "</html>");
         valorPainel.setForeground(new Color(0, 0, 0));
         valorPainel.setBounds(560, 0, 600,100);
         valorPainel.setFont(new Font("Times New Roman", Font.PLAIN, 35));
         valorPainel.setVisible(true);
-        if (salario > 0) {
+
+        if (RetornaInfoConta.retornaSaldo() > 0) {
             valorPainel.setForeground(new Color(27, 236, 62));
         }else{
             valorPainel.setForeground(new Color(246, 106, 106));
