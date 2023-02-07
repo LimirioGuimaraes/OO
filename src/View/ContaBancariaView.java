@@ -1,9 +1,14 @@
 package View;
 
+import conexoes.ConexaoSQLite;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ContaBancariaView extends JFrame {
 
@@ -73,6 +78,7 @@ public class ContaBancariaView extends JFrame {
         painelInfo = new JPanel();
         painelInfo.setBounds(300,0,500,600);
         painelInfo.setBackground(new Color(180, 220, 209));
+        painelInfo.setLayout(null);
         infoPanel(painelInfo);
         contaBancaria.add(painelInfo);
 
@@ -96,9 +102,61 @@ public class ContaBancariaView extends JFrame {
 
     private void infoPanel(JPanel painelInfo){
 
+        String banco = "nome";
+        int numAgencia;
+        int numConta;
+        int digitoConta;
+        double saldo;
+
         JLabel titulo = new JLabel("Dados da conta");
-        titulo.setBounds(painelInfo.getX()/2, 100, 600,80);
+        titulo.setBounds(painelInfo.getX()/2, -20, 600,80);
         titulo.setFont(new Font("Times New Roman", Font.PLAIN, 35));
+
+        ConexaoSQLite conexaoSQLite = new ConexaoSQLite();
+        conexaoSQLite.conectar();
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+
+        String sql = "SELECT * "
+                +" FROM tbl_contaBancaria"
+                +" WHERE id = ?";
+
+        try{
+
+            preparedStatement = conexaoSQLite.criarPreparedStatement(sql);
+            preparedStatement.setInt(1, LoginView.getIdUsuario());
+
+            resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+
+                banco = resultSet.getString("banco");
+                numAgencia = resultSet.getInt("numAgencia");
+                numConta = resultSet.getInt("numConta");
+                digitoConta = resultSet.getInt("digitoConta");
+                saldo = resultSet.getDouble("saldo");
+
+                System.out.println(banco + numAgencia +numConta+ digitoConta+saldo);
+            }
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }finally {
+
+            try{
+                resultSet.close();
+                preparedStatement.close();
+                conexaoSQLite.desconectar();
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+
+        JLabel bancoLabel = new JLabel("Banco: " + banco);
+        bancoLabel.setBounds(0,50,600,80);
+        bancoLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        bancoLabel.setVisible(true);
+        painelInfo.add(bancoLabel);
 
 
         painelInfo.add(titulo);

@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 public class LoginView extends JFrame {
 
     JTextField nome_usuario;
-    JTextField senha_usuario;
+    JPasswordField senha_usuario;
     JFrame login;
     private static int idUsuario = 0;
 
@@ -44,9 +44,10 @@ public class LoginView extends JFrame {
         login.add(nome_usuario);
 
         //Criação do espaço para o usuário adicionar a senha
-        senha_usuario = new JTextField();
+        senha_usuario = new JPasswordField();
         senha_usuario.setText("");
         senha_usuario.setBounds(85, 115, 140, 30);
+        senha_usuario.setForeground(Color.BLACK);
         senha_usuario.setVisible(true);
         login.add(senha_usuario);
 

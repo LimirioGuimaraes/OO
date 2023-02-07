@@ -205,7 +205,7 @@ public class TelaPrincipal extends JFrame {
     }
 
     private void abrirDespesas(ActionEvent actionEvent) {
-        System.out.println(LoginView.getIdUsuario());
+        new DespesasView();
     }
 
     private void abrirPerfil(ActionEvent actionEvent) {
