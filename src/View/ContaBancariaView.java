@@ -20,7 +20,6 @@ public class ContaBancariaView extends JFrame {
     JTextField digitoContaTextField;
     JTextField saldoTextField;
     JPanel painelEdicao;
-    JLabel agenciaLabel;
     public ContaBancariaView(){
         super();
         contaBancaria = new JFrame();
@@ -275,7 +274,7 @@ public class ContaBancariaView extends JFrame {
         bancoLabel.setVisible(true);
         painelInfo.add(bancoLabel);
 
-        agenciaLabel = new JLabel("Número da agência: " + RetornaInfoConta.retornaNumAgencia());
+        JLabel agenciaLabel = new JLabel("Número da agência: " + RetornaInfoConta.retornaNumAgencia());
         agenciaLabel.setBounds(5,100,600,50);
         agenciaLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         agenciaLabel.setVisible(true);

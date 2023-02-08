@@ -149,6 +149,7 @@ public class TelaPrincipal extends JFrame {
     }
 
     private void abrirPerfil(ActionEvent actionEvent) {
+        new MeuPerfil();
     }
 
     private void abrirControle(ActionEvent actionEvent) {
