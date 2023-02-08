@@ -1,6 +1,5 @@
 package View;
 
-import conexoes.ConexaoSQLite;
 import model.RetornaInfoConta;
 import model.RetornaInfoUsuario;
 
@@ -8,17 +7,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Objects;
 
 
 public class TelaPrincipal extends JFrame {
     ImageIcon fundo = new ImageIcon(Objects.requireNonNull(getClass().getResource("Imagens/menu.png")));
+    static JFrame telaPrincipal;
     public TelaPrincipal(){
         super();
-        JFrame telaPrincipal = new JFrame();
+        telaPrincipal = new JFrame();
         telaPrincipal.setTitle("Controle Financeiro");
         telaPrincipal.setSize(800,600);
         telaPrincipal.getContentPane().setBackground(new Color(95, 159, 159));
@@ -149,7 +146,7 @@ public class TelaPrincipal extends JFrame {
     }
 
     private void abrirPerfil(ActionEvent actionEvent) {
-        new MeuPerfil();
+        new MeuPerfilView();
     }
 
     private void abrirControle(ActionEvent actionEvent) {

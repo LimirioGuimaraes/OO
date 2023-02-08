@@ -1,17 +1,11 @@
 package View;
 
-import conexoes.ConexaoSQLite;
-import model.Pessoa;
 import model.Usuario;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class CadastrarUsuario extends JFrame {
+public class CadastrarUsuarioView extends JFrame {
 
     public static JTextField nomeUsuario;
     public static JTextField telefoneUsuario;
@@ -20,7 +14,7 @@ public class CadastrarUsuario extends JFrame {
     public static JTextField acessoUsuario;
     public static JTextField senhaUsuario;
     JFrame cadastrarUsuario;
-    public CadastrarUsuario(){
+    public CadastrarUsuarioView(){
         super();
         cadastrarUsuario = new JFrame();
         cadastrarUsuario.setSize(800, 600);

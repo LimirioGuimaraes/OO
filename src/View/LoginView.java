@@ -1,7 +1,6 @@
 package View;
 
 import model.Login;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -73,7 +72,7 @@ public class LoginView extends JFrame {
     }
 
     private void criarUsuario(ActionEvent actionEvent) {
-        new CadastrarUsuario();
+        new CadastrarUsuarioView();
     }
 
     private void verificaLogin(ActionEvent actionEvent) {
