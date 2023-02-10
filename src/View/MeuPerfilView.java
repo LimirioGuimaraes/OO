@@ -120,6 +120,9 @@ public class MeuPerfilView extends JFrame {
         String sql4 = "DELETE FROM tbl_rendaExtra"
                 + " WHERE id = ?;";
 
+        String sql5 = "DELETE FROM tbl_acoes"
+                + " WHERE id = ?;";
+
 
         try {
 
@@ -136,6 +139,10 @@ public class MeuPerfilView extends JFrame {
             preparedStatement.executeUpdate();
 
             preparedStatement = conexaoSQLite.criarPreparedStatement(sql4);
+            preparedStatement.setInt(1, LoginView.getIdUsuario());
+            preparedStatement.executeUpdate();
+
+            preparedStatement = conexaoSQLite.criarPreparedStatement(sql5);
             preparedStatement.setInt(1, LoginView.getIdUsuario());
             preparedStatement.executeUpdate();
 

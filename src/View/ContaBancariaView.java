@@ -1,9 +1,6 @@
 package View;
 
-import model.ContaBancaria;
-import model.RendaExtra;
-import model.RetornaInfoConta;
-import model.Salario;
+import model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,11 +21,18 @@ public class ContaBancariaView extends JFrame {
     JTextField origemTextField;
     JTextField valorRenda;
     JPanel painelRenda;
+    JPanel painelAcoes;
+    JTextField nomeAcaoField;
+    JTextField valorAcao;
+    JPanel painelAddAcao;
+    JTextField removeAcao;
     public ContaBancariaView(){
         super();
         painelEdicao = new JPanel();
         painelSalario = new JPanel();
         painelRenda = new JPanel();
+        painelAcoes = new JPanel();
+        painelAddAcao = new JPanel();
         
         contaBancaria = new JFrame();
         contaBancaria.setTitle("Conta Bancária");
@@ -45,7 +49,6 @@ public class ContaBancariaView extends JFrame {
         painelBotoes.setBackground(new Color(95, 159, 159));
         painelBotoes.setLayout(null);
         contaBancaria.add(painelBotoes);
-
 
         JButton salario = new JButton();
         salario.setLayout(null);
@@ -66,31 +69,23 @@ public class ContaBancariaView extends JFrame {
         rendaExtra.addActionListener(this::addRendaExtra);
         painelBotoes.add(rendaExtra);
 
-        JButton cripto = new JButton();
-        cripto.setText("Criptomoedas");
-        cripto.setFont(new Font("Times New Roman",Font.PLAIN,23));
-        cripto.setBounds(0,200,300,100);
-        cripto.setBackground(new Color(95, 159, 159));
-        cripto.setForeground(new Color(255, 255, 255));
-        painelBotoes.add(cripto);
-
         JButton acoes = new JButton();
         acoes.setText("Ações");
         acoes.setFont(new Font("Times New Roman",Font.PLAIN,23));
-        acoes.setBounds(0,300,300,100);
+        acoes.setBounds(0,200,300,100);
         acoes.setBackground(new Color(95, 159, 159));
         acoes.setForeground(new Color(255, 255, 255));
+        acoes.addActionListener(this::infoAcoes);
         painelBotoes.add(acoes);
 
         JButton editar = new JButton();
         editar.setText("Editar Informações");
         editar.setFont(new Font("Times New Roman",Font.PLAIN,23));
-        editar.setBounds(0,400,300,100);
+        editar.setBounds(0,300,300,100);
         editar.setBackground(new Color(95, 159, 159));
         editar.setForeground(new Color(255, 255, 255));
         editar.addActionListener(this::editarInfoConta);
         painelBotoes.add(editar);
-
 
         //Painel para mostrar informacoes
         painelInfo = new JPanel();
@@ -116,6 +111,103 @@ public class ContaBancariaView extends JFrame {
         contaBancaria.setVisible(true);
     }
 
+    private void infoAcoes(ActionEvent actionEvent) {
+        
+        painelAcoes.setBounds(300,0,500,600);
+        painelAcoes.setBackground(new Color(180, 220, 209));
+        painelAcoes.setLayout(null);
+        contaBancaria.add(painelAcoes);
+
+        painelRenda.setVisible(false);
+        painelEdicao.setVisible(false);
+        painelInfo.setVisible(false);
+        painelSalario.setVisible(false);
+        painelAcoes.setVisible(true);
+
+        Salario.buscarInfoSalario();
+
+        JLabel titulo = new JLabel("Ações");
+        titulo.setBounds(220, -20, 600,80);
+        titulo.setFont(new Font("Times New Roman", Font.PLAIN, 35));
+        painelAcoes.add(titulo);
+
+        painelAddAcao.setBounds(0,40,500,220);
+        painelAddAcao.setBackground(new Color(180, 220, 209));
+        painelAddAcao.setLayout(null);
+        painelAddAcao.setVisible(true);
+        painelAcoes.add(painelAddAcao);
+
+        JLabel nomeAcao = new JLabel("Nome da ação");
+        nomeAcao.setBounds(5, 15, 400,30);
+        nomeAcao.setFont(new Font("Arial", Font.PLAIN, 21));
+        nomeAcao.setForeground(new Color(0, 0, 0));
+        painelAddAcao.add(nomeAcao);
+
+        nomeAcaoField = new JTextField();
+        nomeAcaoField.setBounds(145, 15, 300,30);
+        nomeAcaoField.setText("Nome ação: ");
+        nomeAcaoField.setVisible(true);
+        painelAddAcao.add(nomeAcaoField);
+
+        JLabel valorLabel = new JLabel("Valor:");
+        valorLabel.setBounds(5, 50, 200,30);
+        valorLabel.setFont(new Font("Arial", Font.PLAIN, 21));
+        valorLabel.setForeground(new Color(0, 0, 0));
+        painelAddAcao.add(valorLabel);
+
+        valorAcao = new JTextField();
+        valorAcao.setBounds(60, 50, 140, 30);
+        valorAcao.setText("0");
+        valorAcao.setVisible(true);
+        painelAddAcao.add(valorAcao);
+
+        JButton addAcao = new JButton();
+        addAcao.setText("Adicionar ação");
+        addAcao.setFont(new Font("Times New Roman",Font.PLAIN,23));
+        addAcao.setBounds(150,90,200,35);
+        addAcao.addActionListener(this::adicionarAcao);
+        painelAddAcao.add(addAcao);
+
+        JLabel labelRemoveAcao = new JLabel("Passe o id da ação q deseja remover: ");
+        labelRemoveAcao.setBounds(5, 140, 400,30);
+        labelRemoveAcao.setFont(new Font("Arial", Font.PLAIN, 21));
+        labelRemoveAcao.setForeground(new Color(0, 0, 0));
+        painelAddAcao.add(labelRemoveAcao);
+
+        removeAcao = new JTextField();
+        removeAcao.setBounds(365, 140, 30, 30);
+        removeAcao.setText("0");
+        removeAcao.setVisible(true);
+        painelAddAcao.add(removeAcao);
+
+        JLabel listarAcao = new JLabel();
+        listarAcao.setBounds(0,220,500,380);
+        listarAcao.setFont(new Font("Arial", Font.PLAIN, 21));
+        listarAcao.setForeground(new Color(0, 0, 0));
+        listarAcao.setText(Acoes.listarAcoes());
+        painelAcoes.add(listarAcao);
+
+        JButton removerAcao = new JButton();
+        removerAcao.setText("Remover ação");
+        removerAcao.setFont(new Font("Times New Roman",Font.PLAIN,23));
+        removerAcao.setBounds(150,180,200,35);
+        removerAcao.addActionListener((event) -> Acoes.apagarAcao(contaBancaria,removeAcao));
+        painelAddAcao.add(removerAcao);
+        
+        JButton cancelar = new JButton();
+        cancelar.setText("Cancelar");
+        cancelar.setFont(new Font("Times New Roman",Font.PLAIN,23));
+        cancelar.setBounds(175,500,150,35);
+        cancelar.addActionListener((event) -> painelInfo.setVisible(true));
+        cancelar.addActionListener((event) -> painelAcoes.setVisible(false));
+
+        painelAcoes.add(cancelar);
+    }
+
+    private void adicionarAcao(ActionEvent actionEvent) {
+        Acoes.addAcao(LoginView.getIdUsuario(), contaBancaria, nomeAcaoField,valorAcao);
+    }
+
     private void addRendaExtra(ActionEvent actionEvent) {
 
         painelRenda.setBounds(300,0,500,600);
@@ -124,6 +216,7 @@ public class ContaBancariaView extends JFrame {
         contaBancaria.add(painelRenda);
 
         painelEdicao.setVisible(false);
+        painelAcoes.setVisible(false);
         painelInfo.setVisible(false);
         painelSalario.setVisible(false);
         painelRenda.setVisible(true);
@@ -189,6 +282,7 @@ public class ContaBancariaView extends JFrame {
         contaBancaria.add(painelSalario);
 
         painelRenda.setVisible(false);
+        painelAcoes.setVisible(false);
         painelEdicao.setVisible(false);
         painelInfo.setVisible(false);
         painelSalario.setVisible(true);
@@ -251,6 +345,7 @@ public class ContaBancariaView extends JFrame {
         contaBancaria.add(painelEdicao);
 
         painelRenda.setVisible(false);
+        painelAcoes.setVisible(false);
         painelSalario.setVisible(false);
         painelInfo.setVisible(false);
         painelEdicao.setVisible(true);

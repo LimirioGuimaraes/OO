@@ -139,6 +139,7 @@ public class Usuario extends Pessoa{
                 ContaBancaria.criarConta(id);
                 Salario.criarSalario(id);
                 RendaExtra.criarRenda();
+                Acoes.criarAcoes();
             }
         }
     }

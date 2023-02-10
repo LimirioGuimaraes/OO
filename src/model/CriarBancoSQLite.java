@@ -130,4 +130,34 @@ public class CriarBancoSQLite {
 
     }
 
+    public void criarTabelaAcoes(){
+
+        String sql = ("CREATE TABLE IF NOT EXISTS tbl_acoes"
+                + " ( "
+                + "   idAcao INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "   id INTEGER, "
+                + "   nomeAcao VARCHAR(255), "
+                + "   valor DOUBLE"
+                + " );" );
+        //Executando o sql de criar tabela
+
+        boolean conectou = false;
+
+        try{
+            conectou = this.conexaoSQLite.conectar();
+
+            Statement stmt = this.conexaoSQLite.criarStatement();
+            stmt.execute(sql);
+
+        }catch (SQLException e){
+            System.err.println(e.getMessage());
+
+        }finally {
+            if(conectou){
+                this.conexaoSQLite.desconectar();
+            }
+        }
+
+    }
+
 }

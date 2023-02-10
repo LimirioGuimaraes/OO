@@ -35,8 +35,6 @@ public class RendaExtra {
                 + " saldo = ? "
                 + " WHERE id = ?";
 
-
-
         try{
 
             preparedStatement = conexaoSQLite.criarPreparedStatement(sql);
