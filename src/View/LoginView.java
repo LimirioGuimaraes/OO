@@ -50,7 +50,7 @@ public class LoginView extends JFrame {
         senha_usuario.setVisible(true);
         login.add(senha_usuario);
 
-        //Criação e configuração do botão responsável pelo login
+        //Criacao e configuracao do botao responsavel pelo login
         JButton entrar = new JButton("Entrar");
         entrar.setBounds(5, 225, 140, 35);
         entrar.setBackground(new Color(0, 0, 0, 205));

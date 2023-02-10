@@ -135,7 +135,10 @@ public class Usuario extends Pessoa{
             conexaoSQLite.desconectar();
 
             if (resultado == 1) {
+
                 ContaBancaria.criarConta(id);
+                Salario.criarSalario(id);
+                RendaExtra.criarRenda();
             }
         }
     }

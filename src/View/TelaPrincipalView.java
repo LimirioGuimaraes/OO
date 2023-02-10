@@ -10,10 +10,10 @@ import java.awt.event.ActionListener;
 import java.util.Objects;
 
 
-public class TelaPrincipal extends JFrame {
+public class TelaPrincipalView extends JFrame {
     ImageIcon fundo = new ImageIcon(Objects.requireNonNull(getClass().getResource("Imagens/menu.png")));
     static JFrame telaPrincipal;
-    public TelaPrincipal(){
+    public TelaPrincipalView(){
         super();
         telaPrincipal = new JFrame();
         telaPrincipal.setTitle("Controle Financeiro");
@@ -139,6 +139,7 @@ public class TelaPrincipal extends JFrame {
 
     private void abrirConta(ActionEvent actionEvent) {
         new ContaBancariaView();
+        telaPrincipal.dispose();
     }
 
     private void abrirDespesas(ActionEvent actionEvent) {

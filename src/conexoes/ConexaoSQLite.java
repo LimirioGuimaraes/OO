@@ -1,6 +1,5 @@
 package conexoes;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 
 public class ConexaoSQLite {
@@ -47,11 +46,6 @@ public class ConexaoSQLite {
             return null;
         }
     }
-
-    public Connection getConexao(){
-        return this.conexao;
-    }
-
 }
 
 

@@ -1,7 +1,7 @@
 package model;
 
 import View.LoginView;
-import View.TelaPrincipal;
+import View.TelaPrincipalView;
 import conexoes.ConexaoSQLite;
 
 import javax.swing.*;
@@ -33,7 +33,7 @@ public class Login {
                 LoginView.setIdUsuario(resultSet.getInt("id"));
 
                 login.dispose();
-                new TelaPrincipal();
+                new TelaPrincipalView();
 
             }else{
                 JOptionPane.showMessageDialog(null,

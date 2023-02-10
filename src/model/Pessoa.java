@@ -1,14 +1,5 @@
 package model;
 
-import View.LoginView;
-import View.TelaPrincipal;
-import conexoes.ConexaoSQLite;
-
-import javax.swing.*;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class Pessoa {
     private String nome;
     private String telefone;

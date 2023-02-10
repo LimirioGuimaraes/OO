@@ -1,14 +1,13 @@
 package View;
 
-import conexoes.ConexaoSQLite;
+import model.ContaBancaria;
+import model.RendaExtra;
 import model.RetornaInfoConta;
+import model.Salario;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 public class ContaBancariaView extends JFrame {
 
@@ -19,9 +18,18 @@ public class ContaBancariaView extends JFrame {
     JTextField numContaTextField;
     JTextField digitoContaTextField;
     JTextField saldoTextField;
+    JTextField salarioTextField;
     JPanel painelEdicao;
+    JPanel painelSalario;
+    JTextField origemTextField;
+    JTextField valorRenda;
+    JPanel painelRenda;
     public ContaBancariaView(){
         super();
+        painelEdicao = new JPanel();
+        painelSalario = new JPanel();
+        painelRenda = new JPanel();
+        
         contaBancaria = new JFrame();
         contaBancaria.setTitle("Conta Bancária");
         contaBancaria.setSize(800,600);
@@ -46,6 +54,7 @@ public class ContaBancariaView extends JFrame {
         salario.setBounds(0,0,300,100);
         salario.setBackground(new Color(95, 159, 159));
         salario.setForeground(new Color(255, 255, 255));
+        salario.addActionListener(this::salarioInfoEditar);
         painelBotoes.add(salario);
 
         JButton rendaExtra = new JButton();
@@ -54,6 +63,7 @@ public class ContaBancariaView extends JFrame {
         rendaExtra.setBounds(0,100,300,100);
         rendaExtra.setBackground(new Color(95, 159, 159));
         rendaExtra.setForeground(new Color(255, 255, 255));
+        rendaExtra.addActionListener(this::addRendaExtra);
         painelBotoes.add(rendaExtra);
 
         JButton cripto = new JButton();
@@ -100,70 +110,148 @@ public class ContaBancariaView extends JFrame {
         voltar.setForeground(new Color(255, 255, 255));
         painelBotoes.add(voltar);
 
-        voltar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                contaBancaria.dispose();
-            }
-        });
+        voltar.addActionListener((event) -> contaBancaria.dispose());
+        voltar.addActionListener((event) -> new TelaPrincipalView());
 
         contaBancaria.setVisible(true);
     }
 
+    private void addRendaExtra(ActionEvent actionEvent) {
 
-    private void salvarAtualizacao(ActionEvent actionEvent) {
+        painelRenda.setBounds(300,0,500,600);
+        painelRenda.setBackground(new Color(180, 220, 209));
+        painelRenda.setLayout(null);
+        contaBancaria.add(painelRenda);
 
-        ConexaoSQLite conexaoSQLite = new ConexaoSQLite();
-        conexaoSQLite.conectar();
-        PreparedStatement preparedStatement = null;
+        painelEdicao.setVisible(false);
+        painelInfo.setVisible(false);
+        painelSalario.setVisible(false);
+        painelRenda.setVisible(true);
 
-        String sql = "UPDATE tbl_contaBancaria"
-                    + " SET "
-                    + " banco = ?, "
-                    + " numAgencia = ?, "
-                    + " numConta = ?, "
-                    + " digitoConta = ?, "
-                    + " saldo = ? "
-                    + " WHERE id = ?";
-        try{
 
-            preparedStatement = conexaoSQLite.criarPreparedStatement(sql);
-            preparedStatement.setString(1, bancoTextField.getText());
-            preparedStatement.setInt(2, Integer.parseInt(agenciaTextField.getText()));
-            preparedStatement.setInt(3, Integer.parseInt(numContaTextField.getText()));
-            preparedStatement.setInt(4, Integer.parseInt(digitoContaTextField.getText()));
-            preparedStatement.setDouble(5, Double.parseDouble(saldoTextField.getText()));
-            preparedStatement.setInt(6, LoginView.getIdUsuario());
-            preparedStatement.executeUpdate();
+        Salario.buscarInfoSalario();
 
-            JOptionPane.showMessageDialog(null,
-                    "Dados atualizados", "Informativo", JOptionPane.PLAIN_MESSAGE);
+        JLabel titulo = new JLabel("Rendas Extras");
+        titulo.setBounds(100, -20, 600,80);
+        titulo.setFont(new Font("Times New Roman", Font.PLAIN, 35));
+        painelRenda.add(titulo);
 
-            contaBancaria.dispose();
-            new ContaBancariaView();
+        JLabel ultimoSalarioLabel = new JLabel("Origem: ");
+        ultimoSalarioLabel.setBounds(5, 60, 400,30);
+        ultimoSalarioLabel.setFont(new Font("Arial", Font.PLAIN, 21));
+        ultimoSalarioLabel.setForeground(new Color(0, 0, 0));
+        painelRenda.add(ultimoSalarioLabel);
 
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-        }finally {
-            try {
-                assert preparedStatement != null;
-                preparedStatement.close();
-                conexaoSQLite.desconectar();
-            }catch (SQLException e){
-                System.out.println(e.getMessage());
-            }
-        }
+        origemTextField = new JTextField();
+        origemTextField.setBounds(79, 60, 400,30);
+        origemTextField.setText("Origem");
+        origemTextField.setVisible(true);
+        painelRenda.add(origemTextField);
 
+        JLabel salarioAtualLabel = new JLabel("Valor:");
+        salarioAtualLabel.setBounds(5, 110, 200,30);
+        salarioAtualLabel.setFont(new Font("Arial", Font.PLAIN, 21));
+        salarioAtualLabel.setForeground(new Color(0, 0, 0));
+        painelRenda.add(salarioAtualLabel);
+
+        valorRenda = new JTextField();
+        valorRenda.setBounds(59, 110, 140, 30);
+        valorRenda.setText("0");
+        valorRenda.setVisible(true);
+        painelRenda.add(valorRenda);
+
+        JButton salvar = new JButton();
+        salvar.setText("Adicionar renda");
+        salvar.setFont(new Font("Times New Roman",Font.PLAIN,23));
+        salvar.setBounds(45,450,200,35);
+        salvar.addActionListener(this::addRenda);
+        painelRenda.add(salvar);
+
+        JButton cancelar = new JButton();
+        cancelar.setText("Cancelar");
+        cancelar.setFont(new Font("Times New Roman",Font.PLAIN,23));
+        cancelar.setBounds(255,450,200,35);
+        cancelar.addActionListener((event) -> painelInfo.setVisible(true));
+        cancelar.addActionListener((event) -> painelRenda.setVisible(false));
+
+        painelRenda.add(cancelar);
+    }
+
+    private void addRenda(ActionEvent actionEvent) {
+        RendaExtra.addRendaExtra(LoginView.getIdUsuario(), origemTextField, valorRenda, contaBancaria);
+    }
+
+    private void salarioInfoEditar(ActionEvent actionEvent) {
+        
+        painelSalario.setBounds(300,0,500,600);
+        painelSalario.setBackground(new Color(180, 220, 209));
+        painelSalario.setLayout(null);
+        contaBancaria.add(painelSalario);
+
+        painelRenda.setVisible(false);
+        painelEdicao.setVisible(false);
+        painelInfo.setVisible(false);
+        painelSalario.setVisible(true);
+
+        Salario.buscarInfoSalario();
+
+        JLabel titulo = new JLabel("Dados referentes ao salário");
+        titulo.setBounds(50, -20, 600,80);
+        titulo.setFont(new Font("Times New Roman", Font.PLAIN, 35));
+        painelSalario.add(titulo);
+
+        JLabel ultimoSalarioLabel = new JLabel("Último salário: " + Salario.retornaSalario());
+        ultimoSalarioLabel.setBounds(5, 75, 400,30);
+        ultimoSalarioLabel.setFont(new Font("Arial", Font.PLAIN, 21));
+        ultimoSalarioLabel.setForeground(new Color(0, 0, 0));
+        painelSalario.add(ultimoSalarioLabel);
+
+        JLabel salarioAtualLabel = new JLabel("Sálario atual:");
+        salarioAtualLabel.setBounds(5, 125, 200,30);
+        salarioAtualLabel.setFont(new Font("Arial", Font.PLAIN, 21));
+        salarioAtualLabel.setForeground(new Color(0, 0, 0));
+        painelSalario.add(salarioAtualLabel);
+
+        salarioTextField = new JTextField();
+        salarioTextField.setText(String.valueOf(Salario.retornaSalario()));
+        salarioTextField.setBounds(130, 125, 140, 30);
+        salarioTextField.setVisible(true);
+        painelSalario.add(salarioTextField);
+
+        JButton salvar = new JButton();
+        salvar.setText("Adicionar salário");
+        salvar.setFont(new Font("Times New Roman",Font.PLAIN,23));
+        salvar.setBounds(45,450,200,35);
+        salvar.addActionListener(this::salvarAtualizacaoSalario);
+        painelSalario.add(salvar);
+
+        JButton cancelar = new JButton();
+        cancelar.setText("Cancelar");
+        cancelar.setFont(new Font("Times New Roman",Font.PLAIN,23));
+        cancelar.setBounds(255,450,200,35);
+        cancelar.addActionListener((event) -> painelInfo.setVisible(true));
+        cancelar.addActionListener((event) -> painelSalario.setVisible(false));
+
+        painelSalario.add(cancelar);
+    }
+
+    private void salvarAtualizacaoSalario(ActionEvent actionEvent) {
+        Salario.atualizarSalario(salarioTextField, contaBancaria);
+    }
+
+    private void salvarAtualizacaoConta(ActionEvent actionEvent) {
+       ContaBancaria.salvarAtualizacao(bancoTextField, agenciaTextField, numContaTextField, digitoContaTextField, saldoTextField, contaBancaria);
     }
 
     private void editarInfoConta(ActionEvent actionEvent) {
-
-        painelEdicao = new JPanel();
+        
         painelEdicao.setBounds(300,0,500,600);
         painelEdicao.setBackground(new Color(180, 220, 209));
         painelEdicao.setLayout(null);
         contaBancaria.add(painelEdicao);
 
+        painelRenda.setVisible(false);
+        painelSalario.setVisible(false);
         painelInfo.setVisible(false);
         painelEdicao.setVisible(true);
 
@@ -238,7 +326,7 @@ public class ContaBancariaView extends JFrame {
         salvar.setText("Salvar");
         salvar.setFont(new Font("Times New Roman",Font.PLAIN,23));
         salvar.setBounds(105,450,140,35);
-        salvar.addActionListener(this::salvarAtualizacao);
+        salvar.addActionListener(this::salvarAtualizacaoConta);
         painelEdicao.add(salvar);
 
         bancoTextField.getText();
@@ -247,14 +335,8 @@ public class ContaBancariaView extends JFrame {
         cancelar.setText("Cancelar");
         cancelar.setFont(new Font("Times New Roman",Font.PLAIN,23));
         cancelar.setBounds(250,450,140,35);
-        cancelar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                painelInfo.setVisible(true);
-                painelEdicao.setVisible(false);
-
-            }
-        });
+        cancelar.addActionListener((event) -> painelInfo.setVisible(true));
+        cancelar.addActionListener((event) -> painelEdicao.setVisible(false));
         painelEdicao.add(cancelar);
 
     }

@@ -74,4 +74,60 @@ public class CriarBancoSQLite {
         }
 
     }
+    public void criarTabelaSalario(){
+
+        String sql = ("CREATE TABLE IF NOT EXISTS tbl_salario"
+                + " ( "
+                + "   id INTEGER, "
+                + "   salario DOUBLE"
+                + " );" );
+        //Executando o sql de criar tabela
+
+        boolean conectou = false;
+
+        try{
+            conectou = this.conexaoSQLite.conectar();
+
+            Statement stmt = this.conexaoSQLite.criarStatement();
+            stmt.execute(sql);
+
+        }catch (SQLException e){
+            System.err.println(e.getMessage());
+
+        }finally {
+            if(conectou){
+                this.conexaoSQLite.desconectar();
+            }
+        }
+
+    }
+    public void criarTabelaRendaExtra(){
+
+        String sql = ("CREATE TABLE IF NOT EXISTS tbl_rendaExtra"
+                + " ( "
+                + "   id INTEGER, "
+                + "   origem VARCHAR(255), "
+                + "   valor DOUBLE"
+                + " );" );
+        //Executando o sql de criar tabela
+
+        boolean conectou = false;
+
+        try{
+            conectou = this.conexaoSQLite.conectar();
+
+            Statement stmt = this.conexaoSQLite.criarStatement();
+            stmt.execute(sql);
+
+        }catch (SQLException e){
+            System.err.println(e.getMessage());
+
+        }finally {
+            if(conectou){
+                this.conexaoSQLite.desconectar();
+            }
+        }
+
+    }
+
 }

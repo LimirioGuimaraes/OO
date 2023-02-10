@@ -1,17 +1,18 @@
 package model;
 
+import View.ContaBancariaView;
+import View.LoginView;
 import conexoes.ConexaoSQLite;
 
 import javax.swing.*;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ContaBancaria {
     private String banco = "não informado";
-    private int numAgencia = 0000;
-    private int numConta = 0000000000;
-    private int digitoConta = 000;
+    private int numAgencia = 0;
+    private int numConta = 0;
+    private int digitoConta = 0;
     private double saldo =0.0;
 
     public ContaBancaria(String banco, int numAgencia, int numConta, int digitoConta, double saldo) {
@@ -24,10 +25,54 @@ public class ContaBancaria {
 
     public ContaBancaria(){}
 
+    public static void salvarAtualizacao( JTextField bancoTextField, JTextField agenciaTextField, JTextField numContaTextField,
+    JTextField digitoContaTextField, JTextField saldoTextField, JFrame contaBancaria){
+
+        ConexaoSQLite conexaoSQLite = new ConexaoSQLite();
+        conexaoSQLite.conectar();
+        PreparedStatement preparedStatement = null;
+
+        String sql = "UPDATE tbl_contaBancaria"
+                + " SET "
+                + " banco = ?, "
+                + " numAgencia = ?, "
+                + " numConta = ?, "
+                + " digitoConta = ?, "
+                + " saldo = ? "
+                + " WHERE id = ?";
+        try{
+
+            preparedStatement = conexaoSQLite.criarPreparedStatement(sql);
+            preparedStatement.setString(1, bancoTextField.getText());
+            preparedStatement.setInt(2, Integer.parseInt(agenciaTextField.getText()));
+            preparedStatement.setInt(3, Integer.parseInt(numContaTextField.getText()));
+            preparedStatement.setInt(4, Integer.parseInt(digitoContaTextField.getText()));
+            preparedStatement.setDouble(5, Double.parseDouble(saldoTextField.getText()));
+            preparedStatement.setInt(6, LoginView.getIdUsuario());
+            preparedStatement.executeUpdate();
+
+            JOptionPane.showMessageDialog(null,
+                    "Dados atualizados", "Informativo", JOptionPane.INFORMATION_MESSAGE);
+
+            contaBancaria.dispose();
+            new ContaBancariaView();
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }finally {
+            try {
+                assert preparedStatement != null;
+                preparedStatement.close();
+                conexaoSQLite.desconectar();
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
     public static void criarConta(int id){
 
             ConexaoSQLite conexaoSQLite = new ConexaoSQLite();
-            ResultSet resultSet = null;
             ContaBancaria contaBancaria = new ContaBancaria();
 
             conexaoSQLite.conectar();
@@ -52,7 +97,7 @@ public class ContaBancaria {
                 preparedStatement.setInt(5,contaBancaria.getDigitoConta());
                 preparedStatement.setDouble(6,contaBancaria.getSaldo());
 
-                int resultado = preparedStatement.executeUpdate();
+                preparedStatement.executeUpdate();
 
             }catch (SQLException e){
                 JOptionPane.showMessageDialog(null,e.getMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
@@ -74,39 +119,19 @@ public class ContaBancaria {
         return banco;
     }
 
-    public void setBanco(String banco) {
-        this.banco = banco;
-    }
-
     public int getNumAgencia() {
         return numAgencia;
-    }
-
-    public void setNumAgencia(int numAgencia) {
-        this.numAgencia = numAgencia;
     }
 
     public int getNumConta() {
         return numConta;
     }
 
-    public void setNumConta(int numConta) {
-        this.numConta = numConta;
-    }
-
     public int getDigitoConta() {
         return digitoConta;
     }
 
-    public void setDigitoConta(int digitoConta) {
-        this.digitoConta = digitoConta;
-    }
-
     public double getSaldo() {
         return saldo;
-    }
-
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
     }
 }

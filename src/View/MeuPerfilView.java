@@ -1,13 +1,11 @@
 package View;
 
 import conexoes.ConexaoSQLite;
-import model.RetornaInfoConta;
 import model.RetornaInfoUsuario;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -76,18 +74,13 @@ public class MeuPerfilView extends JFrame {
         alterar.addActionListener(this::alterarInfo);
         meuPerfil.add(alterar);
 
-
         JButton voltar = new JButton();
         voltar.setText("Voltar");
         voltar.setFont(new Font("Times New Roman",Font.PLAIN,23));
         voltar.setBounds(315,500,170,35);
-        voltar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                meuPerfil.dispose();
 
-            }
-        });
+        voltar.addActionListener((event) -> meuPerfil.dispose());
+
         meuPerfil.add(voltar);
 
         JButton apagarConta = new JButton();
@@ -121,6 +114,12 @@ public class MeuPerfilView extends JFrame {
         String sql2 = "DELETE FROM tbl_contaBancaria"
                 + " WHERE id = ?;";
 
+        String sql3 = "DELETE FROM tbl_salario"
+                + " WHERE id = ?;";
+
+        String sql4 = "DELETE FROM tbl_rendaExtra"
+                + " WHERE id = ?;";
+
 
         try {
 
@@ -132,11 +131,20 @@ public class MeuPerfilView extends JFrame {
             preparedStatement.setInt(1, LoginView.getIdUsuario());
             preparedStatement.executeUpdate();
 
+            preparedStatement = conexaoSQLite.criarPreparedStatement(sql3);
+            preparedStatement.setInt(1, LoginView.getIdUsuario());
+            preparedStatement.executeUpdate();
+
+            preparedStatement = conexaoSQLite.criarPreparedStatement(sql4);
+            preparedStatement.setInt(1, LoginView.getIdUsuario());
+            preparedStatement.executeUpdate();
+
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
             try {
+                assert preparedStatement != null;
                 preparedStatement.close();
                 conexaoSQLite.desconectar();
             } catch (SQLException e2) {
@@ -146,8 +154,7 @@ public class MeuPerfilView extends JFrame {
             }
         System.exit(0);
         }
-
-        private void alterarInfo (ActionEvent actionEvent){
+    private void alterarInfo (ActionEvent actionEvent){
 
             //tem que arrumar essa classe
 
@@ -210,8 +217,7 @@ public class MeuPerfilView extends JFrame {
 
 
         }
-
-        private void alterarDadosUsuario (ActionEvent actionEvent){
+    private void alterarDadosUsuario (ActionEvent actionEvent){
 
             ConexaoSQLite conexaoSQLite = new ConexaoSQLite();
             conexaoSQLite.conectar();
@@ -255,5 +261,5 @@ public class MeuPerfilView extends JFrame {
 
         }
 
-    }
+}
 
